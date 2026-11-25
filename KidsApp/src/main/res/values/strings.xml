@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MonitorDad Kids</string>
+    <string name="accessibility_service_description">Detecta a troca de aplicativos em primeiro plano para aplicar os limites de tempo e rotinas configurados pelos pais no MonitorDad.</string>
+</resources>

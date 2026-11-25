@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MonitorDad • by HoD — Demonstração Visual v1.4.0</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Top Preview Toolbar -->
+  <header class="preview-toolbar">
+    <div class="brand-section">
+      <div class="brand-logo-icon">MD</div>
+      <div class="brand-title-wrap">
+        <h1>MonitorDad</h1>
+        <span>by HoD • Web Viewer v1.4.0</span>
+      </div>
+    </div>
+
+    <div class="toolbar-controls">
+      <!-- App Switcher -->
+      <div class="control-pill-group">
+        <button class="control-pill-btn active" data-switch-app="parent">📱 ParentApp</button>
+        <button class="control-pill-btn" data-switch-app="kids">🧒 KidsApp</button>
+      </div>
+
+      <!-- View Device Frame Switcher -->
+      <div class="control-pill-group">
+        <button class="control-pill-btn active" data-switch-frame="phone">Celular</button>
+        <button class="control-pill-btn" data-switch-frame="tablet">Tablet</button>
+        <button class="control-pill-btn" data-switch-frame="desktop">Expandido</button>
+      </div>
+
+      <!-- Splash Preview Button -->
+      <button class="control-pill-btn" id="btn-replay-splash" title="Simular Splash Screen">▶ Splash</button>
+
+      <!-- Demo Indicator Badge -->
+      <div class="demo-watermark">
+        <span class="pulse-dot"></span>
+        Demonstração Visual • v1.4.0
+      </div>
+    </div>
+  </header>
+
+  <div class="demo-disclaimer-banner">
+    <strong>Aviso:</strong> Esta página é apenas uma <strong>demonstração visual interativa</strong> das telas e estados do MonitorDad Parent e MonitorDad Kids. Não executa comunicação ou permissões reais do Android.
+  </div>
+
+  <!-- Main Preview Stage -->
+  <main class="preview-stage">
+    <div class="device-frame view-phone">
+      <div class="device-notch">
+        <div class="speaker"></div>
+      </div>
+
+      <div class="app-container">
+
+        <!-- Splash Screen Simulation Overlay -->
+        <div id="splash-overlay" class="splash-overlay" aria-hidden="true">
+          <div class="splash-emblem">
+            <div class="splash-shield">MD</div>
+          </div>
+          <div class="splash-title">MonitorDad • by HoD</div>
+          <div class="splash-subtitle" id="splash-subtitle-text">MonitorDad Parent • Controle Familiar</div>
+          <div style="font-size: 11px; color: var(--color-text-secondary); margin-top: 12px;">
+            (Pré-visualização da tela de inicialização)
+          </div>
+        </div>
+
+        <!-- ==========================================
+             PARENT APP VIEW
+             ========================================== -->
+        <div id="parent-app-root" style="display: flex; flex-direction: column; height: 100%;">
+          
+          <div class="screen-scroll-area">
+            
+            <!-- App Header -->
+            <div class="app-header">
+              <div class="header-top-row">
+                <div class="brand-inline">
+                  <div class="brand-badge-mini">MD</div>
+                  <div class="brand-title-mini">
+                    MonitorDad
+                    <span class="role-pill role-pill-parent">PAIS</span>
+                  </div>
+                </div>
+
+                <div class="status-chips-wrap">
+                  <span class="chip-status">📶 Remoto • Online</span>
+                  <span class="chip-battery">🔋 82%</span>
+                </div>
+              </div>
+
+              <div class="device-greeting-row">
+                <div>
+                  <div class="greeting-sub">Monitorando agora • HoD</div>
+                  <div class="device-title">Tablet do Lucas</div>
+                </div>
+                <span class="badge badge-positive" id="device-status-badge">SEGURO</span>
+              </div>
+            </div>
+
+            <!-- ================= TAB 1: VISÃO GERAL ================= -->
+            <div id="tab-overview" class="tab-screen-content">
+
+              <!-- EM USO AGORA Card (Novo v1.4.0) -->
+              <div class="doh-card doh-card-highlight">
+                <div class="card-header-row">
+                  <div>
+                    <div class="card-subtitle">EM USO AGORA</div>
+                    <div class="card-title" id="current-app-card-title">Atividade em Tempo Real</div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span class="badge badge-cyan" id="current-app-badge">● EM USO</span>
+                    <button class="doh-btn doh-btn-secondary" id="btn-toggle-current-app-state" style="padding: 4px 8px; font-size: 10px;">
+                      Alternar Estado
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Active Foreground State -->
+                <div class="current-app-row" id="current-app-active-box">
+                  <div class="current-app-icon" id="current-app-icon">▶️</div>
+                  <div class="current-app-meta">
+                    <div class="current-app-name" id="current-app-name">YouTube Kids</div>
+                    <div class="current-app-pkg" id="current-app-pkg">com.google.android.apps.youtube.kids</div>
+                    <div class="current-app-session" id="current-app-session">Sessão atual: 18 min • Hoje: 1h 10m</div>
+                  </div>
+                </div>
+
+                <!-- Waiting State -->
+                <div class="current-app-row" id="current-app-waiting-box" style="display: none;">
+                  <div class="current-app-icon" style="border-color: var(--color-border);">⏳</div>
+                  <div class="current-app-meta">
+                    <div class="current-app-name" style="font-size: 14px;">Aguardando atividade do dispositivo</div>
+                    <div class="current-app-pkg">Nenhum aplicativo em primeiro plano no momento</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Main Status & Screen Time Card -->
+              <div class="doh-card">
+                <div class="card-header-row">
+                  <div>
+                    <div class="card-subtitle">TEMPO DE TELA HOJE</div>
+                    <div class="card-title" id="device-status-text" style="color: var(--color-neon-green);">Protegido & Liberado</div>
+                  </div>
+                </div>
+
+                <!-- Animated Wave Screen Time Meter -->
+                <div class="wave-meter-container">
+                  <div class="wave-circle">
+                    <canvas id="wave-canvas" class="wave-canvas"></canvas>
+                    <div class="wave-content-overlay">
+                      <div class="wave-label-small">TEMPO USADO</div>
+                      <div class="wave-time-display" id="screen-time-used-val">2h 45m</div>
+                      <div class="wave-limit-pill" id="screen-time-limit-val">Limite: 4h 00m</div>
+                    </div>
+                  </div>
+                  <div class="wave-remaining-caption" id="screen-time-remaining-val">Restam 1h 15m de uso hoje</div>
+                </div>
+
+                <!-- 3 Metrics Row -->
+                <div class="metrics-3col">
+                  <div class="metric-mini-box">
+                    <div class="metric-mini-label">Usado hoje</div>
+                    <div class="metric-mini-val" id="metric-used-today">2h 45m</div>
+                  </div>
+                  <div class="metric-mini-box">
+                    <div class="metric-mini-label">Limite diário</div>
+                    <div class="metric-mini-val" id="metric-daily-limit">4h 00m</div>
+                  </div>
+                  <div class="metric-mini-box">
+                    <div class="metric-mini-label">Restante</div>
+                    <div class="metric-mini-val" id="metric-remaining" style="color: var(--color-neon-green);">1h 15m</div>
+                  </div>
+                </div>
+
+                <!-- Quick Action Buttons -->
+                <div class="action-buttons-grid">
+                  <button class="doh-btn doh-btn-primary" id="btn-add-15m" style="flex: 1;">
+                    ⏱️ +15 min
+                  </button>
+                  <button class="doh-btn doh-btn-outline" id="btn-pause-device" style="flex: 1;">
+                    ⏸️ Pausar
+                  </button>
+                  <button class="doh-btn doh-btn-secondary doh-btn-icon-only" id="btn-open-sound-modal" title="Tocar som">
+                    🔔
+                  </button>
+                </div>
+                <div class="action-buttons-grid" style="margin-top: 8px;">
+                  <button class="doh-btn doh-btn-secondary" data-jump-tab="apps" style="flex: 1; font-size: 12px;">
+                    📱 Gerenciar Apps
+                  </button>
+                  <button class="doh-btn doh-btn-secondary" data-jump-tab="rules" style="flex: 1; font-size: 12px;">
+                    🌙 Rotina & Limites
+                  </button>
+                </div>
+              </div>
+
+              <!-- Pending Requests Card -->
+              <div style="margin-bottom: 14px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 15px; font-weight: 800; color: var(--color-text-primary);">Solicitações Pendentes</span>
+                  <span class="badge badge-alert" id="pending-req-count-badge">1 NOVA</span>
+                </div>
+                <div id="pending-requests-container"></div>
+              </div>
+
+              <!-- Most Used Apps Section -->
+              <div>
+                <div style="font-size: 15px; font-weight: 800; color: var(--color-text-primary); margin-bottom: 8px;">
+                  Mais Utilizados Hoje
+                </div>
+                <div id="overview-top-apps"></div>
+              </div>
+
+            </div>
+
+            <!-- ================= TAB 2: APPS & CONTEÚDO ================= -->
+            <div id="tab-apps" class="tab-screen-content" style="display: none;">
+              
+              <div style="margin-bottom: 14px;">
+                <h2 style="font-size: 20px; font-weight: 800; color: var(--color-text-primary);">Apps & Conteúdo</h2>
+                <p style="font-size: 12px; color: var(--color-text-secondary);">Controle de acesso por aplicativo e filtros de segurança</p>
+              </div>
+
+              <!-- Resumo de Utilização e Conectividade -->
+              <div class="doh-card">
+                <div class="sync-status-row">
+                  <div>
+                    <div style="font-size: 15px; font-weight: 800; color: var(--color-text-primary);">Resumo de Utilização</div>
+                    <div id="summary-device-info" style="font-size: 11px; color: var(--color-text-secondary);">
+                      Tablet do Lucas (tablet-lucas-01)
+                    </div>
+                    <div id="summary-sync-status-text" style="font-size: 11px; font-weight: 700; color: var(--color-neon-green); margin-top: 2px;">
+                      Sincronizado há 2 minutos
+                    </div>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span id="summary-sync-badge" class="badge badge-positive">ONLINE</span>
+                    <button class="doh-btn doh-btn-secondary" id="btn-sync-now" style="padding: 5px 10px; font-size: 11px;">
+                      🔄 Sincronizar
+                    </button>
+                  </div>
+                </div>
+
+                <div class="usage-summary-grid">
+                  <div class="usage-metric-card">
+                    <div style="font-size: 11px; color: var(--color-text-secondary);">Tempo Total Hoje</div>
+                    <div class="metric-val" id="summary-total-today-val">2h 45m</div>
+                    <div class="metric-sub" id="summary-diff-yesterday-val">+12 min vs ontem</div>
+                  </div>
+
+                  <div class="usage-metric-card">
+                    <div style="font-size: 11px; color: var(--color-text-secondary);">Mais Utilizado</div>
+                    <div class="metric-val" id="summary-top-app-val" style="font-size: 14px; margin-top: 6px;">YouTube Kids (1h 10m)</div>
+                    <div class="metric-sub" id="summary-apps-count-val">6 apps hoje</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Category Filter Chips -->
+              <div class="filter-chips-row">
+                <button class="filter-chip-btn active" data-cat="all">Todos</button>
+                <button class="filter-chip-btn" data-cat="games">Jogos</button>
+                <button class="filter-chip-btn" data-cat="videos">Vídeos</button>
+                <button class="filter-chip-btn" data-cat="education">Educação</button>
+                <button class="filter-chip-btn" data-cat="communication">Comunicação</button>
+                <button class="filter-chip-btn" data-cat="other">Outros</button>
+              </div>
+
+              <!-- Content Protection Card -->
+              <div class="doh-card">
+                <div class="card-header-row">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 20px;">🛡️</span>
+                    <div>
+                      <div class="card-title">Proteção de Conteúdo</div>
+                      <div class="card-subtitle">DNS DoH & Filtros</div>
+                    </div>
+                  </div>
+                  <span class="badge badge-positive">ATIVO</span>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <div style="font-size: 13px; font-weight: 700;">Navegação Segura DoH</div>
+                      <div style="font-size: 11px; color: var(--color-text-secondary);">DNS criptografado anti-malware</div>
+                    </div>
+                    <label class="switch-container">
+                      <input type="checkbox" class="switch-input" checked>
+                      <span class="switch-track"><span class="switch-thumb"></span></span>
+                    </label>
+                  </div>
+
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <div style="font-size: 13px; font-weight: 700;">Filtro SafeSearch</div>
+                      <div style="font-size: 11px; color: var(--color-text-secondary);">Oculta resultados impróprios</div>
+                    </div>
+                    <label class="switch-container">
+                      <input type="checkbox" class="switch-input" checked>
+                      <span class="switch-track"><span class="switch-thumb"></span></span>
+                    </label>
+                  </div>
+
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <div style="font-size: 13px; font-weight: 700;">Bloqueio de Compras</div>
+                      <div style="font-size: 11px; color: var(--color-text-secondary);">Exige autorização dos pais</div>
+                    </div>
+                    <label class="switch-container">
+                      <input type="checkbox" class="switch-input" checked>
+                      <span class="switch-track"><span class="switch-thumb"></span></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Apps List Container -->
+              <div style="display: flex; justify-content: space-between; align-items: center; margin: 16px 0 8px 0;">
+                <span style="font-size: 15px; font-weight: 800;">Aplicativos Instalados</span>
+                <span style="font-size: 11px; color: var(--color-electric-cyan); font-weight: 700;">Toque para detalhes</span>
+              </div>
+              <div id="apps-list-container"></div>
+
+            </div>
+
+            <!-- ================= TAB 3: MAPA GPS ================= -->
+            <div id="tab-map" class="tab-screen-content" style="display: none;">
+              
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <div>
+                  <h2 style="font-size: 20px; font-weight: 800;">Mapa GPS</h2>
+                  <p style="font-size: 12px; color: var(--color-text-secondary);">Localização e zonas de segurança</p>
+                </div>
+                <button class="doh-btn doh-btn-secondary" id="btn-refresh-gps" style="font-size: 12px; padding: 6px 12px;">
+                  🔄 Atualizar
+                </button>
+              </div>
+
+              <div class="doh-card" style="padding: 12px;">
+                <div class="gps-map-preview-canvas">
+                  <div class="gps-map-grid-bg"></div>
+                  <div class="map-radar-circle">
+                    <div class="map-center-pin">📍</div>
+                  </div>
+                  <div class="map-floating-card">
+                    <strong>Escola Municipal Monteiro Lobato</strong><br>
+                    <span id="gps-last-updated" style="color: var(--color-text-secondary);">Última atualização: Hoje às 14:32 • Precisão (~15m)</span>
+                  </div>
+                </div>
+                <div style="text-align: center; font-size: 11px; color: var(--color-electric-cyan); font-weight: 600;">
+                  Área demonstrativa de geolocalização • Sem GPS real
+                </div>
+              </div>
+
+              <div style="font-size: 15px; font-weight: 800; margin: 16px 0 8px 0;">Zonas Seguras</div>
+
+              <div class="doh-card" style="margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; gap: 12px; align-items: center;">
+                    <div style="font-size: 24px;">🏫</div>
+                    <div>
+                      <div style="font-size: 14px; font-weight: 700;">Escola Municipal</div>
+                      <div style="font-size: 12px; color: var(--color-text-secondary);">Av. Brasil, 450 (Raio: 250m)</div>
+                    </div>
+                  </div>
+                  <span class="badge badge-positive">DENTRO</span>
+                </div>
+              </div>
+
+              <div class="doh-card" style="margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; gap: 12px; align-items: center;">
+                    <div style="font-size: 24px;">🏡</div>
+                    <div>
+                      <div style="font-size: 14px; font-weight: 700;">Casa</div>
+                      <div style="font-size: 12px; color: var(--color-text-secondary);">Rua das Acácias, 120 (Raio: 150m)</div>
+                    </div>
+                  </div>
+                  <span class="badge" style="background: rgba(255,255,255,0.08); color: var(--color-text-secondary);">FORA</span>
+                </div>
+              </div>
+
+              <div style="font-size: 15px; font-weight: 800; margin: 18px 0 8px 0;">Linha do Tempo de Hoje</div>
+
+              <div class="doh-card" style="padding: 12px 16px;">
+                <div class="timeline-item">
+                  <span class="timeline-time-badge">14:15</span>
+                  <div style="flex: 1;">
+                    <strong style="font-size: 13px;">Biblioteca Escolar</strong>
+                    <div style="font-size: 11px; color: var(--color-text-secondary);">Dentro da Zona Escola</div>
+                  </div>
+                  <span style="color: var(--color-neon-green);">✓</span>
+                </div>
+
+                <div class="timeline-item" style="border: none;">
+                  <span class="timeline-time-badge">07:45</span>
+                  <div style="flex: 1;">
+                    <strong style="font-size: 13px;">Chegada na Escola</strong>
+                    <div style="font-size: 11px; color: var(--color-text-secondary);">Entrada detectada</div>
+                  </div>
+                  <span style="color: var(--color-neon-green);">✓</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ================= TAB 4: REGRAS ================= -->
+            <div id="tab-rules" class="tab-screen-content" style="display: none;">
+              
+              <div style="margin-bottom: 14px;">
+                <h2 style="font-size: 20px; font-weight: 800;">Regras & Rotinas</h2>
+                <p style="font-size: 12px; color: var(--color-text-secondary);">Horário de dormir, modo aula e limites diários</p>
+              </div>
+
+              <!-- Bedtime Rule Card -->
+              <div class="doh-card">
+                <div class="card-header-row">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(0,229,255,0.14); display: flex; align-items: center; justify-content: center; font-size: 18px;">
+                      🌙
+                    </div>
+                    <div>
+                      <div class="card-title">Horário de Dormir</div>
+                      <div class="card-subtitle">Segunda a Domingo</div>
+                    </div>
+                  </div>
+                  <label class="switch-container">
+                    <input type="checkbox" class="switch-input" checked>
+                    <span class="switch-track"><span class="switch-thumb"></span></span>
+                  </label>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                  <div style="flex: 1; background: #1A0E2E; padding: 10px 14px; border-radius: 12px; border: var(--border-subtle);">
+                    <div style="font-size: 11px; color: var(--color-text-secondary);">Início do repouso</div>
+                    <div style="font-size: 16px; font-weight: 800;">21:00</div>
+                  </div>
+                  <div style="flex: 1; background: #1A0E2E; padding: 10px 14px; border-radius: 12px; border: var(--border-subtle);">
+                    <div style="font-size: 11px; color: var(--color-text-secondary);">Despertar</div>
+                    <div style="font-size: 16px; font-weight: 800;">07:00</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- School Mode Card -->
+              <div class="doh-card">
+                <div class="card-header-row">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(158,255,0,0.14); display: flex; align-items: center; justify-content: center; font-size: 18px;">
+                      📚
+                    </div>
+                    <div>
+                      <div class="card-title">Modo Aula</div>
+                      <div class="card-subtitle">07:30 às 12:00 (Seg a Sex)</div>
+                    </div>
+                  </div>
+                  <label class="switch-container">
+                    <input type="checkbox" class="switch-input" checked>
+                    <span class="switch-track"><span class="switch-thumb"></span></span>
+                  </label>
+                </div>
+                <p style="font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; margin-top: 6px;">
+                  Durante o período escolar, apenas aplicativos educacionais autorizados permanecem ativos.
+                </p>
+              </div>
+
+              <!-- Device Info Card -->
+              <div style="font-size: 15px; font-weight: 800; margin: 16px 0 8px 0;">Informações do Dispositivo</div>
+
+              <div class="doh-card">
+                <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(107,66,176,0.3); font-size: 12px;">
+                  <span style="color: var(--color-text-secondary);">Modelo</span>
+                  <span style="font-weight: 700;">Samsung Galaxy Tab A8</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(107,66,176,0.3); font-size: 12px;">
+                  <span style="color: var(--color-text-secondary);">Conexão Remota</span>
+                  <span style="font-weight: 700; color: var(--color-neon-green);">Relay HTTPS • Ativo</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 6px 0; font-size: 12px;">
+                  <span style="color: var(--color-text-secondary);">Versão</span>
+                  <span style="font-weight: 800; color: var(--color-electric-cyan);">v1.4.0</span>
+                </div>
+              </div>
+
+              <div style="text-align: center; margin: 22px 0 12px 0;">
+                <div style="font-size: 13px; font-weight: 800; color: var(--color-neon-green);">
+                  MonitorDad • Desenvolvido por HoD
+                </div>
+                <div style="font-size: 11px; color: var(--color-text-secondary); margin-top: 4px;">
+                  Proteção familiar em tempo real com privacidade e clareza.
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Bottom Navigation Bar (Parent) -->
+          <nav class="bottom-nav-bar" id="parent-bottom-nav">
+            <button class="nav-tab-btn active" data-tab="overview">
+              <span class="tab-icon">🏠</span>
+              <span class="tab-label">Visão Geral</span>
+            </button>
+            <button class="nav-tab-btn" data-tab="apps">
+              <span class="tab-icon">📱</span>
+              <span class="tab-label">Apps & Conteúdo</span>
+            </button>
+            <button class="nav-tab-btn" data-tab="map">
+              <span class="tab-icon">🗺️</span>
+              <span class="tab-label">Mapa GPS</span>
+            </button>
+            <button class="nav-tab-btn" data-tab="rules">
+              <span class="tab-icon">⚙️</span>
+              <span class="tab-label">Regras</span>
+            </button>
+          </nav>
+
+        </div>
+
+        <!-- ==========================================
+             KIDS APP VIEW
+             ========================================== -->
+        <div id="kids-app-root" style="display: none; height: 100%; position: relative;">
+          
+          <div class="screen-scroll-area" style="padding-bottom: 36px;">
+            
+            <!-- Kids Header -->
+            <div class="app-header">
+              <div class="header-top-row">
+                <div class="brand-inline">
+                  <div class="brand-badge-mini">MD</div>
+                  <div class="brand-title-mini">
+                    MonitorDad
+                    <span class="role-pill role-pill-kids">KIDS</span>
+                  </div>
+                </div>
+
+                <button class="doh-btn doh-btn-secondary" data-open-pin style="padding: 6px 12px; font-size: 11px;">
+                  🔒 Acesso dos Pais
+                </button>
+              </div>
+
+              <div class="device-greeting-row" style="margin-top: 6px;">
+                <div>
+                  <div class="greeting-sub">Ambiente seguro • HoD</div>
+                  <div class="device-title">Olá, Lucas! 👋</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TEMPO RESTANTE Hero Card (v1.4.0) -->
+            <div class="kids-hero-card" id="kids-hero-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span class="card-subtitle" style="color: var(--color-neon-green);" id="kids-time-status-label">TEMPO RESTANTE</span>
+                <button class="doh-btn doh-btn-secondary" id="btn-kids-toggle-low-time" style="padding: 3px 8px; font-size: 10px;">
+                  Simular Tempo Baixo
+                </button>
+              </div>
+              <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px;">
+                <div style="font-size: 32px; font-weight: 900; color: var(--color-text-primary);" id="kids-remaining-time-val">01h 15min</div>
+                <span class="badge badge-positive" id="kids-time-badge">LIBERADO</span>
+              </div>
+              <div class="progress-bar-bg" style="height: 10px; margin: 10px 0 8px 0;">
+                <div class="progress-bar-fill" id="kids-time-progress-bar" style="width: 31%;"></div>
+              </div>
+              <div style="font-size: 11px; color: var(--color-text-secondary);" id="kids-time-subtitle">
+                Contagem contínua em tempo real • Limite diário: 4h 00m
+              </div>
+            </div>
+
+            <!-- Sua Rotina Configurada Card -->
+            <div class="doh-card">
+              <div class="card-header-row" style="margin-bottom: 8px;">
+                <div class="card-title" style="font-size: 15px;">Sua Rotina Configurada</div>
+                <span class="badge badge-cyan">ATIVA</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12px;">
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--color-text-secondary);">⏱️ Limite diário</span>
+                  <strong>4h 00min por dia</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--color-text-secondary);">🌙 Horário de dormir</span>
+                  <strong>21:00 às 07:00</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span style="color: var(--color-text-secondary);">📚 Modo Aula</span>
+                  <strong>07:30 às 12:00</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Simulation Controls for Kids Overlays -->
+            <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+              <button class="doh-btn doh-btn-secondary" id="btn-kids-show-rest" style="flex: 1; font-size: 12px;">
+                🌿 Tela de Descanso
+              </button>
+              <button class="doh-btn doh-btn-danger" id="btn-kids-show-lock" style="flex: 1; font-size: 12px;">
+                🌙 Tempo Encerrado
+              </button>
+            </div>
+
+            <!-- Permission Card -->
+            <div class="doh-card" style="padding: 12px 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-size: 13px; font-weight: 700;">🛡️ Estatísticas de Uso</div>
+                  <div id="kids-perm-desc" style="font-size: 11px; color: var(--color-text-secondary);">Monitoramento ativo (Demo)</div>
+                </div>
+                <span id="kids-perm-badge" class="badge badge-positive">ATIVO</span>
+              </div>
+              <button class="doh-btn doh-btn-secondary" id="btn-kids-perm-info" style="width: 100%; font-size: 11px; padding: 7px; margin-top: 8px;">
+                Ver Detalhes da Permissão
+              </button>
+            </div>
+
+            <!-- Seus Aplicativos (2-column grid with LIBERADO / BLOQUEADO) -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+              <span style="font-size: 15px; font-weight: 800;">Seus Aplicativos</span>
+              <span style="font-size: 11px; color: var(--color-text-secondary);">Liberados & Bloqueados</span>
+            </div>
+
+            <div class="kids-apps-grid" id="kids-apps-grid"></div>
+
+          </div>
+
+          <!-- Kids Rest Screen Overlay -->
+          <div id="kids-rest-overlay" class="kids-overlay-screen" style="display: none;">
+            <div class="lock-card-panel">
+              <div class="modal-icon-circle" style="width: 76px; height: 76px; font-size: 38px; margin-bottom: 16px;">
+                🌿
+              </div>
+              <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 10px;">
+                Hora de Descansar!
+              </h2>
+              <p style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 20px;">
+                Seus olhos precisam de uma pausa. Olhe para longe pela janela, estique as pernas e tome um copo de água!
+              </p>
+
+              <button class="doh-btn doh-btn-primary" id="btn-kids-close-rest" style="width: 100%; margin-bottom: 10px;">
+                Já descansei, voltar (Demo)
+              </button>
+
+              <button class="doh-btn doh-btn-outline" data-open-pin style="width: 100%; font-size: 12px;">
+                🔒 Acesso dos Pais (PIN)
+              </button>
+            </div>
+          </div>
+
+          <!-- Kids Lock Screen Overlay (Preserva integralmente os 3 botões) -->
+          <div id="kids-lock-overlay" class="kids-overlay-screen" style="display: none;">
+            <div class="lock-card-panel">
+              <div class="modal-icon-circle" style="width: 76px; height: 76px; font-size: 38px; margin-bottom: 16px; background: rgba(255,59,92,0.16); border-color: rgba(255,59,92,0.5);">
+                🌙
+              </div>
+              <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 10px;">
+                Tempo Encerrado por Hoje!
+              </h2>
+              <p style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 20px;">
+                Você aproveitou bastante o seu tablet hoje. Agora é hora de descansar, brincar offline e recarregar as energias para amanhã!
+              </p>
+
+              <button class="doh-btn doh-btn-primary" id="btn-kids-request-time" style="width: 100%; margin-bottom: 10px;">
+                Pedir Mais Tempo aos Pais
+              </button>
+
+              <button class="doh-btn doh-btn-secondary" id="btn-kids-close-lock" style="width: 100%; margin-bottom: 10px;">
+                Voltar à Tela Kids (Demo)
+              </button>
+
+              <button class="doh-btn doh-btn-outline" data-open-pin style="width: 100%; font-size: 12px; border: none;">
+                🔒 Acesso dos Pais (PIN)
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ==========================================
+       MODALS & DIALOGS
+       ========================================== -->
+
+  <!-- Modal: App Details -->
+  <div class="doh-modal-backdrop" id="modal-app-details">
+    <div class="doh-modal-dialog" style="max-width: 420px; text-align: left;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="font-size: 30px;" id="detail-modal-icon">▶️</div>
+          <div>
+            <div id="detail-modal-title" style="font-size: 16px; font-weight: 800;">Nome do App</div>
+            <span id="detail-modal-category" class="badge badge-positive" style="font-size: 10px;">VÍDEOS</span>
+          </div>
+        </div>
+        <button class="doh-btn doh-btn-secondary doh-btn-icon-only" data-close-modal="modal-app-details" style="width: 32px; height: 32px;">✕</button>
+      </div>
+
+      <div style="margin-bottom: 12px;">
+        <div style="font-size: 11px; color: var(--color-text-secondary);">Identificador do Pacote:</div>
+        <div class="app-package-code" id="detail-modal-pkg">com.app.example</div>
+      </div>
+
+      <div class="usage-summary-grid" style="margin-bottom: 14px;">
+        <div class="usage-metric-card">
+          <div style="font-size: 11px; color: var(--color-text-secondary);">Uso Hoje</div>
+          <div class="metric-val" id="detail-modal-today" style="font-size: 18px;">1h 10m</div>
+          <div class="metric-sub" id="detail-modal-lastused">Hoje às 14:10</div>
+        </div>
+        <div class="usage-metric-card">
+          <div style="font-size: 11px; color: var(--color-text-secondary);">Uso Ontem</div>
+          <div class="metric-val" id="detail-modal-yesterday" style="font-size: 18px;">55 min</div>
+          <div class="metric-sub">Comparativo diário</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 14px;">
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Histórico de Sessões de Hoje</div>
+        <div class="sessions-list-wrap" id="detail-modal-sessions"></div>
+      </div>
+
+      <div style="background: #1A0E2E; border-radius: 12px; padding: 12px; margin-bottom: 14px; border: var(--border-subtle);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 13px; font-weight: 700;">Limite Diário</span>
+          <span id="detail-modal-slider-val" style="font-size: 12px; font-weight: 700; color: var(--color-neon-green);">60 minutos</span>
+        </div>
+        <div class="limit-slider-wrap">
+          <input type="range" class="limit-slider-input" id="detail-modal-slider" min="15" max="180" step="15" value="60">
+        </div>
+        <button class="doh-btn doh-btn-secondary" id="btn-save-app-limit" style="width: 100%; font-size: 12px; padding: 7px;">
+          Salvar Limite (Demonstração)
+        </button>
+      </div>
+
+      <button class="doh-btn doh-btn-primary" data-close-modal="modal-app-details" style="width: 100%;">
+        Fechar
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal: Permission Explanation -->
+  <div class="doh-modal-backdrop" id="modal-permission-info">
+    <div class="doh-modal-dialog" style="max-width: 400px; text-align: left;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+        <div class="modal-icon-circle" style="width: 44px; height: 44px; font-size: 22px; margin: 0;">🛡️</div>
+        <div>
+          <h3 style="font-size: 16px; font-weight: 800;">Estatísticas de Uso</h3>
+          <span style="font-size: 11px; color: var(--color-electric-cyan); font-weight: 600;">UsageStatsManager (Android)</span>
+        </div>
+      </div>
+      <p style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 14px;">
+        Permite contabilizar o tempo de tela e identificar o aplicativo em primeiro plano sem ler mensagens, senhas ou arquivos pessoais.
+      </p>
+      <div style="display: flex; gap: 8px;">
+        <button class="doh-btn doh-btn-secondary" id="btn-toggle-perm-demo" style="flex: 1; font-size: 12px;">
+          Alternar Status (Demo)
+        </button>
+        <button class="doh-btn doh-btn-primary" data-close-modal="modal-permission-info" style="flex: 1; font-size: 12px;">
+          Entendi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Play Sound -->
+  <div class="doh-modal-backdrop" id="modal-play-sound">
+    <div class="doh-modal-dialog">
+      <div class="modal-icon-circle">🔔</div>
+      <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 8px;">Tocar Som no Dispositivo</h3>
+      <p style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 16px;">
+        O <strong>Tablet do Lucas</strong> emitirá um sinal sonoro para localização. (Ação demonstrativa)
+      </p>
+      <div style="display: flex; gap: 10px;">
+        <button class="doh-btn doh-btn-secondary" data-close-modal="modal-play-sound" style="flex: 1;">Cancelar</button>
+        <button class="doh-btn doh-btn-primary" id="btn-confirm-sound" style="flex: 1;">Emitir Som</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Review Pending Request -->
+  <div class="doh-modal-backdrop" id="modal-review-request">
+    <div class="doh-modal-dialog">
+      <div class="modal-icon-circle">⏳</div>
+      <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 6px;">Solicitação de Tempo Adicional</h3>
+      <p style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 16px;">
+        Lucas solicitou <strong>+30 minutos</strong> no aplicativo <strong>YouTube Kids</strong>.
+      </p>
+      <div style="display: flex; gap: 10px;">
+        <button class="doh-btn doh-btn-outline" id="btn-reject-request" style="flex: 1;">Recusar</button>
+        <button class="doh-btn doh-btn-primary" id="btn-approve-request" style="flex: 1.2;">Aprovar +30m</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Parent PIN Authentication -->
+  <div class="doh-modal-backdrop" id="modal-pin-auth">
+    <div class="doh-modal-dialog">
+      <div class="modal-icon-circle">🔒</div>
+      <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 6px;">Acesso do Responsável</h3>
+      <p style="font-size: 12px; color: var(--color-text-secondary); margin-bottom: 14px;">
+        Digite o PIN de 4 dígitos (Demo: <strong>1234</strong>)
+      </p>
+
+      <div class="pin-dots-row">
+        <div class="pin-dot"></div>
+        <div class="pin-dot"></div>
+        <div class="pin-dot"></div>
+        <div class="pin-dot"></div>
+      </div>
+
+      <div class="pin-keypad-grid">
+        <button class="keypad-btn" data-key="1">1</button>
+        <button class="keypad-btn" data-key="2">2</button>
+        <button class="keypad-btn" data-key="3">3</button>
+        <button class="keypad-btn" data-key="4">4</button>
+        <button class="keypad-btn" data-key="5">5</button>
+        <button class="keypad-btn" data-key="6">6</button>
+        <button class="keypad-btn" data-key="7">7</button>
+        <button class="keypad-btn" data-key="8">8</button>
+        <button class="keypad-btn" data-key="9">9</button>
+        <button class="keypad-btn" data-key="C" style="font-size: 12px;">LIMPAR</button>
+        <button class="keypad-btn" data-key="0">0</button>
+        <button class="keypad-btn" data-key="DEL" style="font-size: 16px;">⌫</button>
+      </div>
+
+      <button class="doh-btn doh-btn-secondary" data-close-modal="modal-pin-auth" style="width: 100%;">
+        Cancelar
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification Element -->
+  <div class="toast-notice" id="demo-toast">Feedback demonstrativo</div>
+
+  <!-- Scripts -->
+  <script src="js/navigation.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

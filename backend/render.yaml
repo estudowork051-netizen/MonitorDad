@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: monitordad-relay
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: "echo 'Zero runtime dependencies'"
+    startCommand: "node src/index.mjs"
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false

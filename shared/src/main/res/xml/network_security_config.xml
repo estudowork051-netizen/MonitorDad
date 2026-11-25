@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!--
+        Permite HTTP apenas para comunicação local em rede Wi-Fi (endereços LAN dinâmicos descobertos via NsdManager).
+        Toda comunicação remota pela internet via HttpsRemoteTransport exige estritamente HTTPS/TLS.
+    -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

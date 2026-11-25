@@ -1,0 +1,15 @@
+{
+  "name": "monitordad-relay-backend",
+  "version": "1.0.0",
+  "description": "MonitorDad HTTPS Relay Server for Parent-Kids remote pairing, commands, ACKs, rules and telemetry",
+  "type": "module",
+  "main": "src/index.mjs",
+  "scripts": {
+    "start": "node src/index.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "license": "PRIVATE"
+}

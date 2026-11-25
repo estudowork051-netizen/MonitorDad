@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="monitor_dad_splash_bg">#FDFBF7</color>
+    <color name="monitor_dad_sage_primary">#75937B</color>
+    <color name="monitor_dad_sage_dark">#465B4B</color>
+</resources>

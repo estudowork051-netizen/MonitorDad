@@ -1,0 +1,15 @@
+MonitorDad • by HoD — Build & Verification Summary (2026-11-25 v1.4.1)
+=======================================================================
+
+1. Compilation Fix (`KidsApp/src/main/java/com/dohguard/kids/screens/HomeScreen.kt:342`)
+   - Root cause: HomeScreen.kt referenced `routine.startHour`, `routine.startMinute`, `routine.endHour`, and `routine.endMinute`, which do not exist on `com.dohguard.shared.model.RoutineRule`.
+   - Actual model (`shared/src/main/java/com/dohguard/shared/model/ControlModels.kt`): `RoutineRule` exposes `startTime: String` and `endTime: String` (formatted `"HH:mm"`).
+   - Fix: Updated line 342 to `"${routine.startTime} - ${routine.endTime}"`.
+   - Verification grep across `ParentApp/`, `KidsApp/`, `shared/`: 0 remaining references to `startHour|startMinute|endHour|endMinute`.
+
+2. Gradle / Android SDK Compilation (Not runnable in this sandbox)
+   - Command attempted: `./gradlew :KidsApp:compileDebugKotlin --no-daemon`
+   - Output: `ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.`
+   - Required next step: `git push origin master` -> GitHub Actions `.github/workflows/android-ci.yml`
+     will run `:KidsApp:compileDebugKotlin`, `:ParentApp:compileDebugKotlin`, `:shared:testDebugUnitTest`,
+     `:ParentApp:assembleDebug`, and `:KidsApp:assembleDebug`, and upload both debug APKs.

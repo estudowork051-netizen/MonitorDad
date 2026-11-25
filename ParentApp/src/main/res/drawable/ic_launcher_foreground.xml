@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Placeholder temporário - substituir pelo ícone oficial do MonitorDad Parent -->
+    <path
+        android:fillColor="#FDFBF7"
+        android:pathData="M54,26 L76,36 L76,54 C76,68 66.5,79.5 54,84 C41.5,79.5 32,68 32,54 L32,36 Z" />
+    <path
+        android:fillColor="#465B4B"
+        android:pathData="M54,34 L69,41 L69,53.5 C69,63.5 62.5,71.8 54,75.5 C45.5,71.8 39,63.5 39,53.5 L39,41 Z" />
+</vector>

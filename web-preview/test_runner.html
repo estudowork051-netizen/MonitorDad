@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>MonitorDad Web Preview Test Runner — Etapa 2</title>
+</head>
+<body>
+  <div id="test-output">Running tests...</div>
+  <iframe id="preview-frame" src="index.html" style="width: 800px; height: 600px;"></iframe>
+
+  <script>
+    const results = [];
+    function assert(cond, msg) {
+      if (!cond) {
+        results.push("FAIL: " + msg);
+        console.error("FAIL:", msg);
+      } else {
+        results.push("PASS: " + msg);
+        console.log("PASS:", msg);
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const iframe = document.getElementById("preview-frame");
+      iframe.onload = () => {
+        try {
+          const doc = iframe.contentDocument || iframe.contentWindow.document;
+          const win = iframe.contentWindow;
+
+          assert(doc !== null, "Iframe document loaded");
+          assert(win.Navigation !== undefined, "Navigation object exists");
+          assert(win.App !== undefined, "App object exists");
+          assert(win.AppState !== undefined, "AppState exists");
+
+          // 1. Initial State
+          assert(win.AppState.usedMinutes === 187, "Initial usedMinutes is 187 (3h 7m)");
+          assert(win.AppState.totalLimitMinutes === 240, "Initial totalLimitMinutes is 240");
+          assert(win.Navigation.currentTab === "overview", "Initial tab is overview");
+
+          // 2. Navigation through all 4 tabs
+          win.Navigation.switchTab("apps");
+          assert(win.Navigation.currentTab === "apps", "Switched to tab apps");
+          assert(doc.getElementById("tab-apps").style.display === "block", "Tab apps visible");
+
+          // 3. Etapa 2: Usage Summary Card verification
+          const totalTodayVal = doc.getElementById("summary-total-today-val").textContent;
+          assert(totalTodayVal.includes("3h 7m"), "Usage summary displays 3h 7m total today");
+          const syncBadge = doc.getElementById("summary-sync-badge").textContent;
+          assert(syncBadge === "ONLINE", "Usage summary displays ONLINE sync status");
+          const deviceInfoText = doc.getElementById("summary-device-info").textContent;
+          assert(deviceInfoText.includes("tablet-lucas-01"), "Usage summary displays device ID (tablet-lucas-01)");
+          const demoNoticeText = doc.getElementById("summary-demo-notice").textContent;
+          assert(demoNoticeText.includes("Dados demonstrativos"), "Usage summary clearly labels demo data");
+
+          // 3b. Fase 1: Splash Screen simulation verification
+          win.App.replaySplash(4000);
+          assert(doc.getElementById("splash-overlay").classList.contains("active"), "Splash overlay activates on replaySplash()");
+          win.App.hideSplash();
+          assert(!doc.getElementById("splash-overlay").classList.contains("active"), "Splash overlay hides cleanly on hideSplash()");
+
+          // 4. Etapa 2: Categories filtering (Todos, Jogos, Vídeos, Educação, Comunicação, Outros)
+          const commChip = doc.querySelector('.filter-chip-btn[data-cat="communication"]');
+          assert(commChip !== null, "Communication category filter chip exists");
+          commChip.click();
+          let renderedApps = doc.querySelectorAll('#apps-list-container .app-item-card');
+          assert(renderedApps.length === 1, "Communication filter displays WhatsApp");
+
+          const otherChip = doc.querySelector('.filter-chip-btn[data-cat="other"]');
+          otherChip.click();
+          renderedApps = doc.querySelectorAll('#apps-list-container .app-item-card');
+          assert(renderedApps.length === 1, "Other filter displays Calculadora");
+
+          const allChip = doc.querySelector('.filter-chip-btn[data-cat="all"]');
+          allChip.click();
+          renderedApps = doc.querySelectorAll('#apps-list-container .app-item-card');
+          assert(renderedApps.length === 8, "All filter displays all 8 apps");
+
+          // 5. Etapa 2: Open App Detail Modal
+          win.App.openAppDetail("app-yt");
+          assert(doc.getElementById("modal-app-details").classList.contains("open"), "App detail modal opened for YouTube Kids");
+          assert(doc.getElementById("detail-modal-pkg").textContent.includes("com.google.android.apps.youtube.kids"), "Detail modal shows correct package name");
+          const sessions = doc.querySelectorAll("#detail-modal-sessions .session-history-item");
+          assert(sessions.length === 2, "Detail modal renders 2 session history items for YouTube Kids");
+
+          // Test limit slider interaction
+          const slider = doc.getElementById("detail-modal-slider");
+          slider.value = 75;
+          slider.dispatchEvent(new Event("input"));
+          doc.getElementById("btn-save-app-limit").click();
+          assert(win.AppState.selectedAppForDetail.limit === 75, "App limit saved to 75 min in AppState");
+
+          win.App.closeModal("modal-app-details");
+          assert(!doc.getElementById("modal-app-details").classList.contains("open"), "App detail modal closed");
+
+          // 6. Etapa 2: Manual Sync Button
+          doc.getElementById("btn-sync-now").click();
+          assert(doc.getElementById("btn-sync-now").textContent.includes("Sincronizando"), "Manual sync button shows feedback");
+
+          // 7. Navigation: Map and Rules
+          win.Navigation.switchTab("map");
+          assert(doc.getElementById("tab-map").style.display === "block", "Tab map visible");
+
+          win.Navigation.switchTab("rules");
+          assert(doc.getElementById("tab-rules").style.display === "block", "Tab rules visible");
+
+          // 8. Action Buttons (+15m, Pause)
+          win.Navigation.switchTab("overview");
+          const prevLimit = win.AppState.totalLimitMinutes + win.AppState.extraMinutes;
+          doc.getElementById("btn-add-15m").click();
+          assert(win.AppState.totalLimitMinutes + win.AppState.extraMinutes === prevLimit + 15, "Add 15m button added 15 minutes");
+
+          // 9. Kids Mode & Permission Card (Etapa 2)
+          win.Navigation.switchApp("kids");
+          assert(doc.getElementById("kids-app-root").style.display === "block", "Kids app root visible");
+          const permBadge = doc.getElementById("kids-perm-badge").textContent;
+          assert(permBadge === "ATIVO", "Kids usage permission badge is initially ATIVO");
+
+          // Open permission info modal
+          doc.getElementById("btn-kids-perm-info").click();
+          assert(doc.getElementById("modal-permission-info").classList.contains("open"), "Permission info modal opened");
+          doc.getElementById("btn-toggle-perm-demo").click();
+          assert(win.AppState.hasKidsUsagePermission === false, "Permission toggled to DESATIVADO");
+          assert(doc.getElementById("kids-perm-badge").textContent === "DESATIVADO", "Kids badge updated to DESATIVADO");
+
+          // Toggle back to active
+          doc.getElementById("btn-kids-perm-info").click();
+          doc.getElementById("btn-toggle-perm-demo").click();
+          assert(win.AppState.hasKidsUsagePermission === true, "Permission toggled back to ATIVO");
+
+          // 10. Kids Rest & Lock Screens & PIN
+          doc.getElementById("btn-kids-show-rest").click();
+          assert(doc.getElementById("kids-rest-overlay").style.display === "flex", "Kids rest overlay displayed");
+          doc.getElementById("btn-kids-close-rest").click();
+
+          doc.getElementById("btn-kids-show-lock").click();
+          assert(doc.getElementById("kids-lock-overlay").style.display === "flex", "Kids lock overlay displayed");
+          doc.getElementById("btn-kids-close-lock").click();
+
+          // PIN Unlock
+          win.App.openModal("modal-pin-auth");
+          doc.querySelector('.keypad-btn[data-key="1"]').click();
+          doc.querySelector('.keypad-btn[data-key="2"]').click();
+          doc.querySelector('.keypad-btn[data-key="3"]').click();
+          doc.querySelector('.keypad-btn[data-key="4"]').click();
+          assert(!doc.getElementById("modal-pin-auth").classList.contains("open"), "PIN 1234 unlocked modal");
+
+          win.Navigation.switchApp("parent");
+          assert(doc.getElementById("parent-app-root").style.display === "block", "Parent app restored");
+
+          results.push("SUMMARY: ALL ETAPA 2 TESTS COMPLETED SUCCESSFULLY!");
+        } catch(err) {
+          results.push("EXCEPTION: " + err.message + "\n" + err.stack);
+        }
+
+        document.getElementById("test-output").innerText = results.join("\n");
+      };
+    });
+  </script>
+</body>
+</html>
